@@ -62,6 +62,10 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('politicalParty.index', ['segment' => request()->route('segment')]) }}"><i
+                        class="fas fa-user-md"></i> Political Party List</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('doctors.index', ['segment' => request()->route('segment')]) }}"><i
                         class="fas fa-user-md"></i> Doctor List</a>
             </li>

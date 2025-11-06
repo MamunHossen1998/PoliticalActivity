@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\BranchController;
 use App\Http\Controllers\Backend\SpecializationController;
 use App\Http\Controllers\Backend\DoctorController;
 use App\Http\Controllers\Backend\AppoinmentController;
+use App\Http\Controllers\PoliticalPartiController;
 
 // Constrain dynamic segment
 Route::pattern('segment', '[A-Za-z0-9_-]+');
@@ -54,15 +55,15 @@ Route::middleware(['web', 'auth', 'ensure.segment'])->prefix('{segment}')->group
     ### Admin Specializations
 
     Route::prefix('specializations')->name('specializations.')->controller(SpecializationController::class)
-->group(function () {
-        Route::get('/', 'index')->name('index');
-        Route::get('/data', 'data')->name('data');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
-        Route::get('/{specialization}/edit', 'edit')->name('edit');
-        Route::put('/{specialization}', 'update')->name('update');
-        Route::delete('/{specialization}', 'destroy')->name('destroy');
-    });
+        ->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/data', 'data')->name('data');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
+            Route::get('/{specialization}/edit', 'edit')->name('edit');
+            Route::put('/{specialization}', 'update')->name('update');
+            Route::delete('/{specialization}', 'destroy')->name('destroy');
+        });
 
     ### Admin Doctors (full-page)
     Route::prefix('doctors')->name('doctors.')->controller(DoctorController::class)->group(function () {
@@ -83,5 +84,16 @@ Route::middleware(['web', 'auth', 'ensure.segment'])->prefix('{segment}')->group
         Route::get('/appointments', 'appointmentsList')->name('appointments.list');
         Route::post('/appointments', 'store')->name('appointments.store');
     });
-});
 
+    ### Political Party Controller
+    // Route::resource('politicalParty', PoliticalPartiController::class)->names('politicalParty');
+    // Route::get('/data', 'data')->name('data');
+
+
+Route::controller(PoliticalPartiController::class)
+    ->group(function () {
+        Route::resource('politicalParty', PoliticalPartiController::class);
+        Route::get('data', 'data')->name('politicalParty.data');
+    });
+
+});
