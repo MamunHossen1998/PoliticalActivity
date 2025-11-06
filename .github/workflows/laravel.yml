@@ -1,0 +1,27 @@
+name: remote ssh command
+on: [push]
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            ls -al
+            cd /var/www/app.ihelpbd.com
+            git pull origin main
+            php artisan migrate:refresh
+            php artisan migrate:fresh --seed
+            mkdir -p bootstrap/cache
+            chmod -R 777 bootstrap/cache
+            chown -R www-data:www-data bootstrap/cache
+            php artisan cache:clear
+            php artisan config:clear
+            php artisan optimize:clear
+            php artisan config:cache

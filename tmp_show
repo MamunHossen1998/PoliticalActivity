@@ -1,0 +1,130 @@
+<?php
+
+namespace App\Http\Controllers\Backend\User;
+
+use App\Http\Controllers\Controller;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+
+class AdminUserController extends Controller
+{
+    public function index(Request $request, string $segment)
+    {
+        return view('backend.admin.users.index', compact('segment'));
+    }
+
+    public function data(Request $request, string $segment)
+    {
+        $draw = (int) $request->input('draw');
+        $start = (int) $request->input('start', 0);
+        $length = (int) $request->input('length', 10);
+        $searchValue = $request->input('search.value');
+
+        $query = User::query();
+
+        $recordsTotal = (clone $query)->count();
+
+        if ($searchValue) {
+            $query->where(function ($q) use ($searchValue) {
+                $q->where('name', 'like', "%{$searchValue}%")
+                  ->orWhere('email', 'like', "%{$searchValue}%");
+            });
+        }
+
+        // Ordering
+        $orderColIndex = $request->input('order.0.column');
+        $orderDir = $request->input('order.0.dir', 'asc');
+        $columns = $request->input('columns', []);
+        $orderCol = $columns[$orderColIndex]['data'] ?? 'id';
+        if (!in_array($orderCol, ['id', 'name', 'email'])) {
+            $orderCol = 'id';
+        }
+        $query->orderBy($orderCol, $orderDir === 'desc' ? 'desc' : 'asc');
+
+        $recordsFiltered = (clone $query)->count();
+
+        $users = $query->skip($start)->take($length)->get(['id', 'name', 'email']);
+
+        $data = $users->map(function ($u) use ($segment) {
+            return [
+                'id' => $u->id,
+                'name' => e($u->name),
+                'email' => e($u->email),
+                'actions' => view('backend.admin.users._actions', [
+                    'segment' => $segment,
+                    'user' => $u,
+                ])->render(),
+            ];
+        });
+
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $data,
+        ]);
+    }
+
+    public function create(Request $request, string $segment)
+    {
+        $user = new User();
+        $action = route('admin.users.store', ['segment' => $segment]);
+        $method = 'POST';
+        return view('backend.admin.users._form', compact('user', 'action', 'method'));
+    }
+
+    public function store(Request $request, string $segment)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:6'],
+        ]);
+
+        $user = User::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User created successfully.',
+        ]);
+    }
+
+    public function edit(Request $request, string $segment, User $user)
+    {
+        $action = route('admin.users.update', ['segment' => $segment, 'user' => $user->id]);
+        $method = 'PUT';
+        return view('backend.admin.users._form', compact('user', 'action', 'method'));
+    }
+
+    public function update(Request $request, string $segment, User $user)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'password' => ['nullable', 'string', 'min:6'],
+        ]);
+
+        if (empty($validated['password'])) {
+            unset($validated['password']);
+        }
+
+        $user->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User updated successfully.',
+        ]);
+    }
+
+    public function destroy(Request $request, string $segment, User $user)
+    {
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User deleted successfully.',
+        ]);
+    }
+}
+
