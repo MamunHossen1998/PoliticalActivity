@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('uuid')->primary();
             $table->string('name', 255);
             $table->string('abbreviation', 50)->nullable();
-            $table->string('founded_year', 50)->nullable();
+            $table->date('founded_year')->nullable();
             $table->timestamps();
         });
     }

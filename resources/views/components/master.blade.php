@@ -652,7 +652,6 @@ html[data-bs-theme="light"] table.dataTable tbody tr {
                         data: data
                     })
                     .done(function(res) {
-                        console.log('res',res);
                         
                         if (res && res.type) notify(res.type, res.message);
                         if (typeof onSuccess === 'function') onSuccess(res);

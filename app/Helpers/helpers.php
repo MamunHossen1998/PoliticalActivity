@@ -8,6 +8,10 @@
  * @author Sakil Jomadder <sakil.diu.cse@gmail.com>
  */
 
+define('INSERT_MSG', 'Record has been inserted successfully.');
+define('UPDATE_MSG', 'Record has been updated successfully.');
+define('DELETE_MSG', 'Record has been deleted successfully.');
+
 if (!function_exists('_icons')) {
     function _icons(string $icon_name = 'user', bool $all = false)
     {

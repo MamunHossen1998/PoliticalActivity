@@ -74,7 +74,7 @@ class UserController extends Controller
             }
 
             return response()->json([
-                'type' => 'error',
+                'type' => 'success',
                 'message' => 'User created successfully.',
             ]);
         } catch (\Throwable $th) {

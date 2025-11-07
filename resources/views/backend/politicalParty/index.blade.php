@@ -5,8 +5,8 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="fw-bold">Admin Users</h4>
             <button class="btn btn-accent btn-sm" id="btnAddUser"
-                data-url="{{ route('users.create', ['segment' => $segment]) }}">
-                <i class="bi bi-person-plus me-1"></i> Add User
+                data-url="{{ route('politicalParty.create', ['segment' => $segment]) }}">
+                <i class="bi bi-person-plus me-1"></i> Add Party
             </button>
         </div>
 
