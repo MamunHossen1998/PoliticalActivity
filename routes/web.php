@@ -8,7 +8,7 @@ use App\Http\Controllers\Backend\BranchController;
 use App\Http\Controllers\Backend\SpecializationController;
 use App\Http\Controllers\Backend\DoctorController;
 use App\Http\Controllers\Backend\AppoinmentController;
-use App\Http\Controllers\PoliticalPartiController;
+use App\Http\Controllers\PoliticalPartyController;
 
 // Constrain dynamic segment
 Route::pattern('segment', '[A-Za-z0-9_-]+');
@@ -90,9 +90,9 @@ Route::middleware(['web', 'auth', 'ensure.segment'])->prefix('{segment}')->group
     // Route::get('/data', 'data')->name('data');
 
 
-Route::controller(PoliticalPartiController::class)
+Route::controller(PoliticalPartyController::class)
     ->group(function () {
-        Route::resource('politicalParty', PoliticalPartiController::class);
+        Route::resource('politicalParty', PoliticalPartyController::class);
         Route::get('data', 'data')->name('politicalParty.data');
     });
 

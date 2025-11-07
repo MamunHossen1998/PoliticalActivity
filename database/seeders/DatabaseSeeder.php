@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             SpecializationSeeder::class,
             DoctorSeeder::class,
             UserSeeder::class,
+            PoliticalPartySeeder::class,
         ]);
     }
 }

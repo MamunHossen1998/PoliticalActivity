@@ -12,14 +12,14 @@
 
         <div class="glass-card p-3">
             <div class="table-responsive">
-                <table id="usersTable" class="table table-striped align-middle w-100">
+                <table id="politicalPartyList" class="table table-striped align-middle w-100">
                     <thead>
                         <tr>
-                            <th data-data="id">#</th>
+                            <th data-data="id">Sl</th>
                             <th data-data="name">Name</th>
-                            <th data-data="email">Email</th>
-                            <th data-data="branch">Branch</th>
-                            <th data-data="roles">Roles</th>
+                            <th data-data="email">Abbreviation</th>
+                            <th data-data="roles">Founded year</th>
+                            <th data-data="roles">Created at</th>
                             <th data-data="actions" class="text-end">Actions</th>
                         </tr>
                     </thead>
@@ -30,32 +30,30 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const table = $('#usersTable').DataTable({
+            const table = $('#politicalPartyList').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: '{{ route('politicalParty.data', ['segment' => $segment]) }}',
-                columns: [{
-                        data: 'id',
-                        name: 'id',
-                        width: '70px'
+                columns: [
+                    {
+                        data: 'sl',
+                        name: 'Sl'
                     },
                     {
                         data: 'name',
                         name: 'name'
                     },
                     {
-                        data: 'email',
-                        name: 'email'
+                        data: 'abbreviation',
+                        name: 'abbreviation'
                     },
                     {
-                        data: 'branch',
-                        name: 'branch'
+                        data: 'founded_year',
+                        name: 'founded_year'
                     },
                     {
-                        data: 'roles',
-                        name: 'roles',
-                        orderable: false,
-                        searchable: false
+                        data: 'created_at',
+                        name: 'created_at'
                     },
                     {
                         data: 'actions',
