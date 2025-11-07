@@ -93,7 +93,7 @@ Route::middleware(['web', 'auth', 'ensure.segment'])->prefix('{segment}')->group
 Route::controller(PoliticalPartyController::class)
     ->group(function () {
         Route::resource('politicalParty', PoliticalPartyController::class);
-        Route::get('data', 'data')->name('politicalParty.data');
+        Route::get('data', 'resourceList')->name('politicalParty.data');
     });
 
 });

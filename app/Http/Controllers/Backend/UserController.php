@@ -48,40 +48,46 @@ class UserController extends Controller
         $user = new User();
         $action = route('users.store', ['segment' => $segment]);
         $method = 'POST';
-        $roles = Role::query()->where('is_active', 1)->orderBy('name')->get(['id','name']);
-        $branches = Branch::query()->where('is_active', 1)->orderBy('name')->get(['id','name']);
+        $roles = Role::query()->where('is_active', 1)->orderBy('name')->get(['id', 'name']);
+        $branches = Branch::query()->where('is_active', 1)->orderBy('name')->get(['id', 'name']);
         return view('backend.users._form', compact('user', 'action', 'method', 'roles', 'branches'));
     }
 
     public function store(Request $request, string $segment)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:6'],
-            'branch_id' => ['nullable','integer', Rule::exists('branches','id')],
-            'role_id' => ['nullable','integer', Rule::exists('roles','id')],
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+                'password' => ['required', 'string', 'min:6'],
+                'branch_id' => ['nullable', 'integer', Rule::exists('branches', 'id')],
+                'role_id' => ['nullable', 'integer', Rule::exists('roles', 'id')],
+            ]);
 
-        $user = User::create($validated);
+            $user = User::create($validated);
 
-        if (!empty($validated['role_id'])) {
-            $role = Role::find($validated['role_id']);
-            if ($role) { $user->syncRoles([$role]); }
+            if (!empty($validated['role_id'])) {
+                $role = Role::find($validated['role_id']);
+                if ($role) {
+                    $user->syncRoles([$role]);
+                }
+            }
+
+            return response()->json([
+                'type' => 'error',
+                'message' => 'User created successfully.',
+            ]);
+        } catch (\Throwable $th) {
+            return _commonSuccessOrErrorMsg('error', $th->getMessage());
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'User created successfully.',
-        ]);
     }
 
     public function edit(Request $request, string $segment, User $user)
     {
         $action = route('users.update', ['segment' => $segment, 'user' => $user->id]);
         $method = 'PUT';
-        $roles = Role::query()->where('is_active', 1)->orderBy('name')->get(['id','name']);
-        $branches = Branch::query()->where('is_active', 1)->orderBy('name')->get(['id','name']);
+        $roles = Role::query()->where('is_active', 1)->orderBy('name')->get(['id', 'name']);
+        $branches = Branch::query()->where('is_active', 1)->orderBy('name')->get(['id', 'name']);
         $user->load('roles:id,name');
         return view('backend.users._form', compact('user', 'action', 'method', 'roles', 'branches'));
     }
@@ -92,8 +98,8 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'password' => ['nullable', 'string', 'min:6'],
-            'branch_id' => ['nullable','integer', Rule::exists('branches','id')],
-            'role_id' => ['nullable','integer', Rule::exists('roles','id')],
+            'branch_id' => ['nullable', 'integer', Rule::exists('branches', 'id')],
+            'role_id' => ['nullable', 'integer', Rule::exists('roles', 'id')],
         ]);
 
         if (empty($validated['password'])) {

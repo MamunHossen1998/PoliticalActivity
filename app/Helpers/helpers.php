@@ -214,3 +214,13 @@ if (!function_exists('_icons')) {
         }
     }
 }
+
+if (!function_exists('_commonSuccessOrErrorMsg')) {
+    function _commonSuccessOrErrorMsg(string $type = 'success', string $message = '')
+    {
+        return response()->json([
+            'type' => $type,
+            'message' => $message,
+        ]);
+    }
+}

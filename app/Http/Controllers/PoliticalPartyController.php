@@ -2,44 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PoliticalParty;
 use Illuminate\Http\Request;
+use App\Models\PoliticalParty;
+use App\Http\Controllers\BaseModelController;
+use App\Services\PoliticalPartyModelService;
 
-class PoliticalPartyController extends Controller
+class PoliticalPartyController extends BaseModelController
 {
+
+    public function __construct(private PoliticalPartyModelService $politicalPartyModelService)
+    {
+     
+    }
     public function index(string $segment)
     {
         return view('backend.politicalParty.index', compact('segment'));
     }
 
-    public function data(Request $request, string $segment)
+    public function resourceList(Request $request, string $segment)
     {
-        $query = PoliticalParty::query();
-        $recordsTotal = (clone $query)->count();
-        $recordsFiltered = (clone $query)->count();
-        $resources = $query->get(['uuid', 'name', 'abbreviation', 'founded_year','created_at']);
-        $sl = 0;
-
-        $data = $resources->map(function ($u) use (&$sl, $segment) {
-            return [
-                'sl' => ++$sl,
-                'name' => e($u->name),
-                'abbreviation' => e($u->abbreviation),
-                'founded_year' => e($u->founded_year),
-                'created_at' => e($u->created_at),
-                'actions' => view('backend.politicalParty._actions', [
-                    'segment' => $segment,
-                    'politicalParty' => $u,
-                ])->render(),
-            ];
-        });
-
-
-        return response()->json([
-            'recordsTotal' => $recordsTotal,
-            'recordsFiltered' => $recordsFiltered,
-            'data' => $data,
-        ]);
+        try {
+            $resources = $this->politicalPartyModelService->resourceList($segment);
+            return response()->json([
+                'recordsTotal' => $resources['recordsTotal'],
+                'recordsFiltered' => $resources['recordsFiltered'],
+                'data' => $resources['data'],
+            ]);
+        } catch (\Throwable $th) {
+            return _commonSuccessOrErrorMsg('error', $th->getMessage());
+        }
       
     }
 }

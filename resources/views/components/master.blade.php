@@ -559,7 +559,7 @@ html[data-bs-theme="light"] table.dataTable tbody tr {
     {{-- Overlay --}}
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    
+
     <div class="main-content">
         {{-- Header --}}
         <x-partials.header />
@@ -637,6 +637,7 @@ html[data-bs-theme="light"] table.dataTable tbody tr {
 
         // Ajax form binder
         function bindAjaxForm($form, onSuccess) {
+        
             $form.on('submit', function(e) {
                 e.preventDefault();
                 const $f = $(this);
@@ -651,7 +652,9 @@ html[data-bs-theme="light"] table.dataTable tbody tr {
                         data: data
                     })
                     .done(function(res) {
-                        if (res && res.success) notify('success', res.message || 'Success');
+                        console.log('res',res);
+                        
+                        if (res && res.type) notify(res.type, res.message);
                         if (typeof onSuccess === 'function') onSuccess(res);
                     })
                     .fail(function(xhr) {
@@ -767,6 +770,7 @@ html[data-bs-theme="light"] table.dataTable tbody tr {
                 timeOut: 3000
             };
             window.notify = function(type, message) {
+
                 if (typeof toastr[type] === 'function') {
                     toastr[type](message);
                 } else {
