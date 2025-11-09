@@ -75,6 +75,8 @@
                 <a href="#" class="nav-link dropdown-toggle {{ $settingsOpen ? 'active' : '' }}"><i
                         class="fas fa-cog"></i> Settings</a>
                 <ul class="submenu" @if ($settingsOpen) style="display: block" @endif>
+                       <li><a class="{{ request()->routeIs('activityType.*') ? 'active' : '' }}"
+                            href="{{ route('activityType.index', ['segment' => request()->route('segment')]) }}">Activity Types</a></li>
                     <li><a class="{{ request()->routeIs('users.*') ? 'active' : '' }}"
                             href="{{ route('users.index', ['segment' => request()->route('segment')]) }}">Users</a></li>
                     <li>

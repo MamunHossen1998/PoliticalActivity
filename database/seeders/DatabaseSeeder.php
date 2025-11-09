@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             DoctorSeeder::class,
             UserSeeder::class,
             PoliticalPartySeeder::class,
+            ActivityTypeSeeder::class,
         ]);
     }
 }

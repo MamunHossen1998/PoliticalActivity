@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityTypeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\LoginController;
 use App\Http\Controllers\Backend\DashboardController;
@@ -89,10 +90,15 @@ Route::middleware(['web', 'auth', 'ensure.segment'])->prefix('{segment}')->group
     // Route::resource('politicalParty', PoliticalPartiController::class)->names('politicalParty');
     // Route::get('/data', 'data')->name('data');
 
-
     Route::controller(PoliticalPartyController::class)
         ->group(function () {
             Route::resource('politicalParty', PoliticalPartyController::class);
-            Route::get('data', 'resourceList')->name('politicalParty.data');
+            Route::get('political-party/data', 'resourceList')->name('politicalParty.data');
+        });
+
+    Route::controller(ActivityTypeController::class)
+        ->group(function () {
+            Route::resource('activityType', ActivityTypeController::class);
+            Route::get('/activity-type/data', 'resourceList')->name('activityType.data');
         });
 });
